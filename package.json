@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "node-fetch": "^2.6.6",
+    "steam-user": "^4.24.6"
+  }
+}
