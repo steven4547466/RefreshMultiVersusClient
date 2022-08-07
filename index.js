@@ -1,6 +1,6 @@
 const SteamUser = require("steam-user");
 const fetch = require("node-fetch");
-const apiKey = "51586fdcbd214feb84b0e475b130fce0"
+const apiKey = "51586fdcbd214feb84b0e475b130fce0" // This is global for all users, don't think it's like my api key or something
 const fs = require("fs");
 const readline = require('readline').createInterface({
   input: process.stdin,
@@ -9,7 +9,7 @@ const readline = require('readline').createInterface({
 
 function prompt() {
   return new Promise(resolve => {
-    console.log("WARNING: I DON'T CARE ABOUT MY ACCOUNT SECURITY BECAUSE MY PASSWORD IS RANDOMLY GENERATED AND I HAVE 2FA AND STEAM GUARD ON. IF YOU CARE ABOUT YOUR ACCOUNT SECURITY, PLEASE DO NOT USE THIS SCRIPT. THE PASSWORD IS STORED IN PLAIN TEXT!!!!")
+    console.log("WARNING: IF YOU CARE ABOUT YOUR ACCOUNT SECURITY (AND DON'T HAVE 2FA ON), PLEASE DO NOT USE THIS SCRIPT. THE PASSWORD IS STORED IN PLAIN TEXT!!!!")
     readline.question('Username: ', name => {
       readline.question('Password: ', password => {
         let config = {
