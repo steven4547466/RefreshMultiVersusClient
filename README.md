@@ -9,7 +9,7 @@ And sometimes you don't want to play against Bugs for the 10th time in a row, so
 # DISCLAIMER
 While I haven't been banned, I can't say for certain if this is allowed (though I can't see why it wouldn't be, it's literally equivalent to relogging).
 
-**Also, when you first set this up it will warn you that the info is stored in plain text, please heed this warning if you don't use like 2FA and/or steam guard**. When you first use this tool it will more than likely prompt you for a steam guard code, just enter it into the command prompt.
+**Also, when you first set this up it will warn you that the info is stored in plain text, please heed this warning if you don't use 2FA and/or steam guard**. When you first use this tool it will more than likely prompt you for a steam guard code, just enter it into the command prompt.
 
 This is fully open source, so you can see I'm not sending the info anywhere, it all stays local on your computer.
 
