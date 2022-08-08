@@ -9,18 +9,26 @@ const readline = require('readline').createInterface({
 
 function prompt() {
   return new Promise(resolve => {
-    console.log("WARNING: IF YOU CARE ABOUT YOUR ACCOUNT SECURITY (AND DON'T HAVE 2FA ON), PLEASE DO NOT USE THIS SCRIPT. THE PASSWORD IS STORED IN PLAIN TEXT!!!!")
-    readline.question('Username: ', name => {
+    console.log("WARNING: THIS SCRIPT WILL SAVE A LOGIN KEY TO LOG IN TO STEAM. THIS DOES NOT SAVE YOUR PASSWORD ANYWHERE, BUT PEOPLE CAN STILL LOG IN WITH THE KEY. THIS KEY IS STORED IN PLAIN TEXT, SO MAKE SURE YOUR PC DOESN'T HAVE ANY MALWARE ON IT.")
+    readline.question('Username: ', accountName => {
       readline.question('Password: ', password => {
-        let config = {
-          username: name,
-          password: password
-        }
-        if (!fs.existsSync(`${process.env.APPDATA}/KillMultiversusClient`))
-          fs.mkdirSync(`${process.env.APPDATA}/KillMultiversusClient`);
-        fs.writeFileSync(`${process.env.APPDATA}/KillMultiversusClient/config.json`, JSON.stringify(config))
-        readline.close();
-        resolve();
+
+        let steamUser = new SteamUser();
+        steamUser.on("loginKey", (loginKey) => {
+          let config = {
+            accountName,
+            loginKey
+          }
+          if (!fs.existsSync(`${process.env.APPDATA}/KillMultiversusClient`))
+            fs.mkdirSync(`${process.env.APPDATA}/KillMultiversusClient`);
+          fs.writeFileSync(`${process.env.APPDATA}/KillMultiversusClient/config.json`, JSON.stringify(config))
+          readline.close();
+          steamUser.logOff()
+        })
+        steamUser.on("disconnected", () => {
+          resolve()
+        })
+        steamUser.logOn({ accountName, password: password, rememberPassword: true });
       });
     });
   })
@@ -32,10 +40,10 @@ async function main() {
   }
 
 
-  let { username, password } = JSON.parse(fs.readFileSync(`${process.env.APPDATA}/KillMultiversusClient/config.json`));
+  let { accountName, loginKey } = JSON.parse(fs.readFileSync(`${process.env.APPDATA}/KillMultiversusClient/config.json`));
 
   let steamUser = new SteamUser();
-  steamUser.logOn({ accountName: username, password: password });
+  steamUser.logOn({ accountName, loginKey });
 
   console.log("Killing client")
 
