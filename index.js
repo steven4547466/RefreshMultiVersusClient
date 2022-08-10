@@ -53,6 +53,13 @@ async function main() {
     fs.writeFileSync(`${process.env.APPDATA}/KillMultiversusClient/config.json`, JSON.stringify(config))
   })
 
+  steamUser.on("error", () => {
+    console.log("There was an error logging in. Try updating your credentials. Exiting in 5 seconds.")
+    setTimeout(() => {
+      process.exit(0)
+    }, 5000)
+  })
+
   steamUser.logOn({ accountName, loginKey });
 
   console.log("Killing client")
