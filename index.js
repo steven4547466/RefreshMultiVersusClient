@@ -39,10 +39,20 @@ async function main() {
     await prompt();
   }
 
-
   let { accountName, loginKey } = JSON.parse(fs.readFileSync(`${process.env.APPDATA}/KillMultiversusClient/config.json`));
 
   let steamUser = new SteamUser();
+
+  steamUser.on("loginKey", (loginKey) => {
+    let config = {
+      accountName,
+      loginKey
+    }
+    if (!fs.existsSync(`${process.env.APPDATA}/KillMultiversusClient`))
+      fs.mkdirSync(`${process.env.APPDATA}/KillMultiversusClient`);
+    fs.writeFileSync(`${process.env.APPDATA}/KillMultiversusClient/config.json`, JSON.stringify(config))
+  })
+
   steamUser.logOn({ accountName, loginKey });
 
   console.log("Killing client")
