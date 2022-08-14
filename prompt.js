@@ -12,10 +12,18 @@ function prompt() {
       readline.question('Password: ', password => {
 
         let steamUser = new SteamUser();
-        steamUser.on("loginKey", (loginKey) => {
+
+        steamUser.on("error", () => {
+          console.log("There was an error logging in. Try updating your credentials. Exiting in 5 seconds.")
+          setTimeout(() => {
+            process.exit(0)
+          }, 5000)
+        })
+
+        steamUser.on("loggedOn", () => {
           let config = {
             accountName,
-            loginKey
+            password
           }
           if (!fs.existsSync(`${process.env.APPDATA}/KillMultiversusClient`))
             fs.mkdirSync(`${process.env.APPDATA}/KillMultiversusClient`);
@@ -28,7 +36,7 @@ function prompt() {
           resolve()
           process.exit(0)
         })
-        steamUser.logOn({ accountName, password: password, rememberPassword: true });
+        steamUser.logOn({ accountName, password: password });
       });
     });
   })

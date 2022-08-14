@@ -14,10 +14,18 @@ function prompt() {
       readline.question('Password: ', password => {
 
         let steamUser = new SteamUser();
-        steamUser.on("loginKey", (loginKey) => {
+        
+        steamUser.on("error", () => {
+          console.log("There was an error logging in. Try updating your credentials. Exiting in 5 seconds.")
+          setTimeout(() => {
+            process.exit(0)
+          }, 5000)
+        })
+
+        steamUser.on("loggedOn", () => {
           let config = {
             accountName,
-            loginKey
+            password
           }
           if (!fs.existsSync(`${process.env.APPDATA}/KillMultiversusClient`))
             fs.mkdirSync(`${process.env.APPDATA}/KillMultiversusClient`);
@@ -28,7 +36,7 @@ function prompt() {
         steamUser.on("disconnected", () => {
           resolve()
         })
-        steamUser.logOn({ accountName, password: password, rememberPassword: true });
+        steamUser.logOn({ accountName, password: password });
       });
     });
   })
@@ -39,19 +47,19 @@ async function main() {
     await prompt();
   }
 
-  let { accountName, loginKey } = JSON.parse(fs.readFileSync(`${process.env.APPDATA}/KillMultiversusClient/config.json`));
+  let { accountName, password } = JSON.parse(fs.readFileSync(`${process.env.APPDATA}/KillMultiversusClient/config.json`));
 
   let steamUser = new SteamUser();
 
-  steamUser.on("loginKey", (loginKey) => {
-    let config = {
-      accountName,
-      loginKey
-    }
-    if (!fs.existsSync(`${process.env.APPDATA}/KillMultiversusClient`))
-      fs.mkdirSync(`${process.env.APPDATA}/KillMultiversusClient`);
-    fs.writeFileSync(`${process.env.APPDATA}/KillMultiversusClient/config.json`, JSON.stringify(config))
-  })
+  // steamUser.on("loginKey", (loginKey) => {
+  //   let config = {
+  //     accountName,
+  //     loginKey
+  //   }
+  //   if (!fs.existsSync(`${process.env.APPDATA}/KillMultiversusClient`))
+  //     fs.mkdirSync(`${process.env.APPDATA}/KillMultiversusClient`);
+  //   fs.writeFileSync(`${process.env.APPDATA}/KillMultiversusClient/config.json`, JSON.stringify(config))
+  // })
 
   steamUser.on("error", () => {
     console.log("There was an error logging in. Try updating your credentials. Exiting in 5 seconds.")
@@ -59,8 +67,7 @@ async function main() {
       process.exit(0)
     }, 5000)
   })
-
-  steamUser.logOn({ accountName, loginKey });
+  steamUser.logOn({ accountName, password });
 
   console.log("Killing client")
 
